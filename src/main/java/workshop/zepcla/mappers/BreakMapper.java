@@ -1,9 +1,12 @@
 package workshop.zepcla.mappers;
 
+import org.springframework.stereotype.Component;
+
 import workshop.zepcla.dto.breakDto.BreakCreationDto;
 import workshop.zepcla.dto.breakDto.BreakDto;
 import workshop.zepcla.entities.BreakEntity;
 
+@Component
 public class BreakMapper {
 
     public BreakEntity toEntity(BreakEntity dto) {

@@ -1,9 +1,12 @@
 package workshop.zepcla.mappers;
 
+import org.springframework.stereotype.Component;
+
 import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
 import workshop.zepcla.dto.holidayDto.HolidayDto;
 import workshop.zepcla.entities.HolidayEntity;
 
+@Component
 public class HolidayMapper {
 
     public HolidayEntity toEntity(HolidayEntity dto) {
