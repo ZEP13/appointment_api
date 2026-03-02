@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
+import workshop.zepcla.entities.BreakEntity;
 import workshop.zepcla.entities.HolidayEntity;
+import workshop.zepcla.exceptions.breakException.BreakNotFound;
+import workshop.zepcla.exceptions.holidayException.HolidayDateInvalidException;
+import workshop.zepcla.exceptions.holidayException.HolidayNotFound;
 import workshop.zepcla.mappers.HolidayMapper;
 import workshop.zepcla.repositories.HolidayRepository;
 
@@ -17,23 +21,30 @@ public class HolidayService {
     private final HolidayRepository repo;
     private final HolidayMapper mapper;
 
-    public void createHoliday(HolidayCreationDto dto) {
+    public HolidayEntity createHoliday(HolidayCreationDto dto) {
+        if (dto.startDate().isAfter(dto.endDate())) {
+            throw new HolidayDateInvalidException("Start date must be before end date");
+        }
         HolidayEntity entity = mapper.toCreationEntity(dto);
-        repo.save(entity);
+        return repo.save(entity);
     }
 
     public void deleteHoliday(Long id) {
-        repo.deleteById(id);
+        HolidayEntity entity = repo.findById(id)
+                .orElseThrow(() -> new HolidayNotFound("with id " + id));
+        repo.delete(entity);
     }
 
     public void updateHoliday(Long id, HolidayCreationDto dto) {
-        HolidayEntity entity = mapper.toCreationEntity(dto);
-        entity.setId(id);
-        repo.save(entity);
+        HolidayEntity existing = repo.findById(id)
+                .orElseThrow(() -> new HolidayNotFound("Break not found with id " + id));
+        existing.setStartDate(dto.startDate());
+        existing.setEndDate(dto.endDate());
+        repo.save(existing);
     }
 
     public HolidayEntity getHolidayById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Holiday not found"));
+        return repo.findById(id).orElseThrow(() -> new HolidayNotFound("with id " + id));
     }
 
     public Iterable<HolidayEntity> getAllHolidays() {

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.breakDto.BreakCreationDto;
 import workshop.zepcla.entities.BreakEntity;
 import workshop.zepcla.exceptions.breakException.BreakNotFound;
+import workshop.zepcla.exceptions.breakException.InvalidBreakTimeException;
 import workshop.zepcla.mappers.BreakMapper;
 import workshop.zepcla.repositories.BreakRepository;
 
@@ -34,7 +35,7 @@ public class BreakService {
 
     public void updateBreak(Long id, BreakCreationDto dto) {
         BreakEntity existing = repo.findById(id)
-                .orElseThrow(() -> new BreakNotFound("Break not found with id " + id));
+                .orElseThrow(() -> new BreakNotFound("with id " + id));
         existing.setStartTime(dto.startTime());
         existing.setEndTime(dto.endTime());
         repo.save(existing);
