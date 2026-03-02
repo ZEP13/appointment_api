@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.appointmentDto.AppointmentPublicCreationDto;
 import workshop.zepcla.entities.AppointmentEntity;
+import workshop.zepcla.entities.EnterpriseEntity;
 import workshop.zepcla.exceptions.appointmentException.AppointmentNotFound;
 import workshop.zepcla.exceptions.appointmentException.NoCancelationAllowed;
 import workshop.zepcla.mappers.AppointmentMapper;
@@ -21,12 +22,20 @@ public class AppointmentServicePublic {
 
     private final AppointmentRepository appointmentRepository;
     private final AppointmentMapper appointmentMapper;
+    private final EnterpriseService enterpriseService;
 
     public void createAppointmentWithoutAccount(AppointmentPublicCreationDto dto) {
         AppointmentEntity appointment = appointmentMapper.toEntityForPublicCreation(dto);
         appointment.setToken(UUID.randomUUID().toString());
         appointment.setStatus("PLANIFIED");
+
+        Long idEnterprise = dto.enterprise().id();
+        EnterpriseEntity enterprise = enterpriseService.getEnterpriseById(idEnterprise);
+
+        appointment.setEnterprise(enterprise);
+
         appointmentRepository.save(appointment);
+
     }
 
     public AppointmentPublicCreationDto getAppointmentByToken(String token) {

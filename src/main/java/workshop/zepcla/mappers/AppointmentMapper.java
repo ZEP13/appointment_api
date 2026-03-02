@@ -6,6 +6,7 @@ import workshop.zepcla.dto.appointmentDto.AppointmentCreationByAdminDto;
 import workshop.zepcla.dto.appointmentDto.AppointmentCreationDto;
 import workshop.zepcla.dto.appointmentDto.AppointmentDto;
 import workshop.zepcla.dto.appointmentDto.AppointmentPublicCreationDto;
+import workshop.zepcla.dto.enterpriseDto.EnterpriseDto;
 import workshop.zepcla.dto.userDto.UserDto;
 import workshop.zepcla.entities.AppointmentEntity;
 import workshop.zepcla.entities.UserEntity;
@@ -13,41 +14,59 @@ import workshop.zepcla.entities.UserEntity;
 @Component
 public class AppointmentMapper {
 
-    public AppointmentDto toDto(AppointmentEntity appointment) {
-        if (appointment == null) {
-            return null;
-        }
-
-        UserDto clientDto = null;
-        if (appointment.getClient() != null) {
-            clientDto = new UserDto(
-                    appointment.getClient().getId(),
-                    appointment.getClient().getEmail(),
-                    appointment.getClient().getFirstName(),
-                    appointment.getClient().getLastName(),
-                    appointment.getClient().getPhone(),
-                    appointment.getClient().getRole());
-        }
-
-        UserDto creatorDto = null;
-        if (appointment.getCreator() != null) {
-            creatorDto = new UserDto(
-                    appointment.getCreator().getId(),
-                    appointment.getCreator().getEmail(),
-                    appointment.getCreator().getFirstName(),
-                    appointment.getCreator().getLastName(),
-                    appointment.getCreator().getPhone(),
-                    appointment.getCreator().getRole());
-        }
-
-        return new AppointmentDto(
-                appointment.getDate(),
-                appointment.getTime(),
-                clientDto,
-                creatorDto,
-                appointment.getDuration(),
-                appointment.getStatus());
+public AppointmentDto toDto(AppointmentEntity appointment) {
+    if (appointment == null) {
+        return null;
     }
+
+    UserDto clientDto = null;
+    if (appointment.getClient() != null) {
+        clientDto = new UserDto(
+                appointment.getClient().getId(),
+                appointment.getClient().getEmail(),
+                appointment.getClient().getFirstName(),
+                appointment.getClient().getLastName(),
+                appointment.getClient().getPhone(),
+                appointment.getClient().getRole());
+    }
+
+    UserDto creatorDto = null;
+    if (appointment.getCreator() != null) {
+        creatorDto = new UserDto(
+                appointment.getCreator().getId(),
+                appointment.getCreator().getEmail(),
+                appointment.getCreator().getFirstName(),
+                appointment.getCreator().getLastName(),
+                appointment.getCreator().getPhone(),
+                appointment.getCreator().getRole());
+    }
+
+    EnterpriseDto enterpriseDto = null;
+    if (appointment.getEnterprise() != null) {
+
+        var enterprise = appointment.getEnterprise();
+
+        enterpriseDto = new EnterpriseDto(
+                enterprise.getId(),
+                enterprise.getName(),
+                enterprise.getOpeningTime(),
+                enterprise.getClosingTime(),
+                enterprise.getDaysOff(),
+                null,
+                null
+        );
+    }
+
+    return new AppointmentDto(
+            appointment.getDate(),
+            appointment.getTime(),
+            clientDto,
+            creatorDto,
+            appointment.getDuration(),
+            appointment.getStatus(),
+            enterpriseDto
+    );
+}
 
     public AppointmentEntity toEntityForCreationByAdmin(AppointmentCreationByAdminDto dto) {
         if (dto == null) {
@@ -88,16 +107,36 @@ public class AppointmentMapper {
     }
 
     public AppointmentPublicCreationDto toPublicCreationDto(AppointmentEntity appointment) {
-        if (appointment == null) {
-            return null;
-        }
-
-        return new AppointmentPublicCreationDto(
-                appointment.getDate(),
-                appointment.getTime(),
-                appointment.getDuration(),
-                appointment.getStatus());
+    if (appointment == null) {
+        return null;
     }
+
+    EnterpriseDto enterpriseDto = null;
+    if (appointment.getEnterprise() != null) { // assuming this is EnterpriseEntity
+        var enterprise = appointment.getEnterprise();
+        enterpriseDto = new EnterpriseDto(
+                enterprise.getId(),
+                enterprise.getName(),
+                enterprise.getOpeningTime(),
+                enterprise.getClosingTime(),
+                enterprise.getDaysOff(),
+                null,
+                null
+        );
+    }
+
+    String clientEmail = appointment.getClient() != null
+            ? appointment.getClient().getEmail()
+            : null;
+
+    return new AppointmentPublicCreationDto(
+            appointment.getDate(),
+            appointment.getTime(),
+            appointment.getDuration(),
+            enterpriseDto,
+            clientEmail
+    );
+}
 
     public AppointmentEntity toEntityForPublicCreation(AppointmentPublicCreationDto dto) {
         if (dto == null) {
