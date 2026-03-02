@@ -3,8 +3,7 @@ package workshop.zepcla.entities;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +23,7 @@ public class BreakEntity extends BaseEntity {
 
     private LocalTime endTime;
 
-    private Enum<DayOfWeek> dayOfWeek;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "days_off", nullable = true)
+    private DayOfWeek daysOff;
 }
