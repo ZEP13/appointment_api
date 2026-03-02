@@ -38,7 +38,7 @@ public class EnterpriseEntity extends BaseEntity {
 
     @Column(nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_time_break", referencedColumnName = "id")
-    private BreakEntity timeBreakId;
+    @JoinColumn(name = "id_break", referencedColumnName = "id")
+    private BreakEntity breakId;
 
 }
