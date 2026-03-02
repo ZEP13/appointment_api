@@ -10,4 +10,6 @@
 
     <include file="db/changelog/002_Table_Appointments.xml"/>
 
+    <include file="/db/changelog/003_Table_Enterprise.xml"/>
+
 </databaseChangeLog>

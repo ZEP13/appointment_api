@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+    <changeSet id="003-create-enterprise" author="CLBI">
+        <createTable tableName="enterprise">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="openingTime" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closingTime" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="days_off" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="id_holiday" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_time_break" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="enterprise"
+                baseColumnNames="id_holiday"
+                referencedTableName="holiday"
+                referencedColumnNames="id"
+                constraintName="fk_enterprise_holiday"/>
+
+        <addForeignKeyConstraint
+                baseTableName="enterprise"
+                baseColumnNames="id_break"
+                referencedTableName="breaks"
+                referencedColumnNames="id"
+                constraintName="fk_enterprise_time_break"/>
+    </changeSet>
+</databaseChangeLog>

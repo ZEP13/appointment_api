@@ -3,10 +3,7 @@ package workshop.zepcla.entities;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,15 +27,16 @@ public class EnterpriseEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalTime closingTime;
 
-    @Column(nullable = true)
-    private Enum<DayOfWeek> daysOff;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "days_off", nullable = true)
+    private DayOfWeek daysOff;
 
-    @Column(nullable = true)
-    @JoinColumn(name = "id_holiday", referencedColumnName = "id")
-    private Long holidayId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_holiday", referencedColumnName = "id", nullable = true)
+    private HolidayEntity holiday;
 
-    @Column(nullable = true)
-    @JoinColumn(name = "id_time_break", referencedColumnName = "id")
-    private Long timeBreakId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_time_break", referencedColumnName = "id", nullable = true)
+    private BreakEntity timeBreak;
 
 }
