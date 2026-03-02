@@ -1,5 +1,7 @@
 package workshop.zepcla.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -34,8 +36,12 @@ public class BreakService {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Break not found"));
     }
 
-    public Iterable<BreakEntity> getAllBreaks() {
+    public List<BreakEntity> getAllBreaks() {
         return repo.findAll();
+    }
+
+    public List<BreakEntity> getBreaksByEnterpriseId(Long enterpriseId) {
+        return repo.findByEnterpriseId(enterpriseId);
     }
 
 }

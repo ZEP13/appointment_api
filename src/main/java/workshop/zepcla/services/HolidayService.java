@@ -1,5 +1,7 @@
 package workshop.zepcla.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -36,5 +38,9 @@ public class HolidayService {
 
     public Iterable<HolidayEntity> getAllHolidays() {
         return repo.findAll();
+    }
+
+    public List<HolidayEntity> getHolidaysByEnterpriseId(Long enterpriseId) {
+        return repo.findByEnterpriseId(enterpriseId);
     }
 }

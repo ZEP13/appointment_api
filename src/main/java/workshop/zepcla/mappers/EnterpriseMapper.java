@@ -32,8 +32,8 @@ public class EnterpriseMapper {
                 enterpriseEntity.getOpeningTime(),
                 enterpriseEntity.getClosingTime(),
                 enterpriseEntity.getDaysOff(),
-                enterpriseEntity.getHolidayId(),
-                enterpriseEntity.getBreakId());
+                null,
+                null);
     }
 
     public EnterpriseEntity toCreationEntity(EnterpriseCreationDto enterpriseCreationDto) {
