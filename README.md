@@ -30,8 +30,9 @@
 - **PUT** /cancel/:id
 - **GET** /all
 - **GET** /:id
-- **GET** /by-date?date=YYYY-MM-DD
 - **GET** /my-appointments
+- **GET** /my-appointments/by-date?date=YYYY-MM-DD
+- **GET** /by-date?date=YYYY-MM-DD
 - **GET** /by-client/:id
 - **GET** /by-creator/:id
 - **POST** /admin-create

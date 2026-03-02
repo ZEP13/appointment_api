@@ -49,4 +49,8 @@ public class AppointmentEntity extends BaseEntity {
 
     @Column(nullable = true, unique = true)
     private String token;
+
+    @Column(nullable = false)
+    @JoinColumn(name = "id_enterprise", referencedColumnName = "id")
+    private Long enterpriseId;
 }

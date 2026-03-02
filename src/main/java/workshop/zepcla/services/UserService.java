@@ -57,19 +57,16 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException("Username already exists");
         }
 
-        // 1️⃣ Créer le nouvel utilisateur
         UserEntity newUser = userMapper.toEntityForCreation(userCreationDto);
         newUser.setPassword(passwordEncoder.encode(userCreationDto.password()));
         repo.save(newUser);
 
-        // 2️⃣ Si token fourni, associer les RDV publics existants
-        // Dans UserService.save()
         if (userCreationDto.tokenRdv() != null && !userCreationDto.tokenRdv().isEmpty()) {
             List<AppointmentEntity> appointments = appointmentRepository.findAllByToken(userCreationDto.tokenRdv());
             for (AppointmentEntity appt : appointments) {
                 appt.setClient(newUser);
                 appt.setToken(null);
-                appointmentRepository.save(appt); // on peut sauvegarder directement ici
+                appointmentRepository.save(appt);
             }
         }
     }
