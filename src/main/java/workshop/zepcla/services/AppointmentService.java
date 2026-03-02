@@ -1,5 +1,9 @@
 package workshop.zepcla.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,6 +11,7 @@ import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.appointmentDto.AppointmentCreationByAdminDto;
 import workshop.zepcla.dto.appointmentDto.AppointmentCreationDto;
 import workshop.zepcla.dto.appointmentDto.AppointmentDto;
+import workshop.zepcla.dto.userDto.UserDto;
 import workshop.zepcla.entities.AppointmentEntity;
 import workshop.zepcla.entities.UserEntity;
 import workshop.zepcla.exceptions.appointmentException.AppointmentNotFound;
@@ -23,6 +28,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static workshop.zepcla.specifications.AppointmentSpecification.*;
 
 // add update logic
 // add super finder lis find?clientId=1&date=2024-06-30&time=14:00
@@ -166,5 +173,27 @@ public class AppointmentService {
                 .stream()
                 .map(appointmentMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Page<AppointmentDto> superSearch(
+            Integer page,
+            Integer size,
+            Long id,
+            String date,
+            String time,
+            String duration,
+            String status,
+            String token) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Specification<AppointmentEntity> spec = Specification
+                .where(hasDate(date))
+                .and(hasTime(time))
+                .and(hasDuration(duration))
+                .and(hasStatus(status))
+                .and(hasToken(token));
+
+        return appointmentRepository.findAll(spec, pageable)
+                .map(appointmentMapper::toDto);
     }
 }

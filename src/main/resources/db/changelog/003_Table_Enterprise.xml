@@ -25,7 +25,7 @@
             <column name="id_holiday" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="id_time_break" type="INT">
+            <column name="id_break" type="INT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
