@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
-import workshop.zepcla.entities.BreakEntity;
 import workshop.zepcla.entities.HolidayEntity;
-import workshop.zepcla.exceptions.breakException.BreakNotFound;
 import workshop.zepcla.exceptions.holidayException.HolidayDateInvalidException;
 import workshop.zepcla.exceptions.holidayException.HolidayNotFound;
 import workshop.zepcla.mappers.HolidayMapper;

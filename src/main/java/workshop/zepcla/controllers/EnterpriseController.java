@@ -1,15 +1,13 @@
 package workshop.zepcla.controllers;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.enterpriseDto.EnterpriseCreationDto;
+import workshop.zepcla.dto.enterpriseDto.EnterpriseDto;
+import workshop.zepcla.entities.EnterpriseEntity;
 import workshop.zepcla.services.EnterpriseService;
 
 @RestController
@@ -20,27 +18,52 @@ public class EnterpriseController {
     private final EnterpriseService service;
 
     @PostMapping("/create")
-    public void createEnterprise(@RequestBody EnterpriseCreationDto dto) {
-        service.createEnterprise(dto);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseEntity> createEnterprise(@RequestBody EnterpriseCreationDto dto) {
+        return new ResponseEntity<>(service.createEnterprise(dto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAll")
-    public void getAllEnterprises() {
-        service.getAllEnterprises();
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Iterable<EnterpriseEntity>> getAllEnterprises() {
+        return ResponseEntity.ok(service.getAllEnterprises());
     }
 
-    @GetMapping("/getById")
-    public void getEnterpriseById(Long id) {
-        service.getEnterpriseById(id);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseEntity> getEnterpriseById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getEnterpriseById(id));
+    }
+
+    @GetMapping("/{id}/details")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseDto> getEnterpriseWithDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getEnterpriseWithDetails(id));
+    }
+
+    @GetMapping("/{id}/breaks")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseDto> getEnterpriseBreakDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getEnterpriseBreakDetails(id));
+    }
+
+    @GetMapping("/{id}/holidays")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseDto> getEnterpriseHolidayDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getEnterpriseHolidayDetails(id));
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteEnterprise(Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteEnterprise(@PathVariable Long id) {
         service.deleteEnterprise(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update/{id}")
-    public void updateEnterprise(Long id, @RequestBody EnterpriseCreationDto dto) {
-        service.updateEnterprise(id, dto);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EnterpriseEntity> updateEnterprise(@PathVariable Long id,
+            @RequestBody EnterpriseCreationDto dto) {
+        return ResponseEntity.ok(service.updateEnterprise(id, dto));
     }
 }

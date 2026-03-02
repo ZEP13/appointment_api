@@ -1,47 +1,59 @@
 package workshop.zepcla.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
-import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
-import workshop.zepcla.services.HolidayService;
+import workshop.zepcla.dto.breakDto.BreakCreationDto;
+import workshop.zepcla.entities.BreakEntity;
+import workshop.zepcla.services.BreakService;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/holidays")
+@RequestMapping("/breaks")
 public class BreakController {
 
-    private final HolidayService service;
+    private final BreakService service;
 
     @PostMapping("/create")
-    public void createHoliday(@RequestBody HolidayCreationDto dto) {
-        service.createHoliday(dto);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> createBreak(@RequestBody BreakCreationDto dto) {
+        service.createBreak(dto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping("/getAll")
-    public void getAllHolidays() {
-        service.getAllHolidays();
-
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<BreakEntity>> getAllBreaks() {
+        return ResponseEntity.ok(service.getAllBreaks());
     }
 
-    @RequestMapping("/getById")
-    public void getHolidayById(Long id) {
-        service.getHolidayById(id);
-
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BreakEntity> getBreakById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getBreakById(id));
     }
 
-    @RequestMapping("/delete/{id}")
-    public void deleteHoliday(Long id) {
-        service.deleteHoliday(id);
-
+    @GetMapping("/by-enterprise/{id_enterprise}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<BreakEntity>> getBreaksByEnterprise(@PathVariable Long id_enterprise) {
+        return ResponseEntity.ok(service.getBreaksByEnterpriseId(id_enterprise));
     }
 
-    @RequestMapping("/update/{id}")
-    public void updateHoliday(Long id, @RequestBody HolidayCreationDto dto) {
-        service.updateHoliday(id, dto);
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteBreak(@PathVariable Long id) {
+        service.deleteBreak(id);
+        return ResponseEntity.noContent().build();
+    }
 
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateBreak(@PathVariable Long id, @RequestBody BreakCreationDto dto) {
+        service.updateBreak(id, dto);
+        return ResponseEntity.noContent().build();
     }
 }

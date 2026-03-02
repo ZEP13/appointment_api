@@ -1,15 +1,15 @@
 package workshop.zepcla.controllers;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
+import workshop.zepcla.entities.HolidayEntity;
 import workshop.zepcla.services.HolidayService;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,27 +19,40 @@ public class HolidayController {
     private final HolidayService service;
 
     @PostMapping("/create")
-    public void createHoliday(@RequestBody HolidayCreationDto dto) {
-        service.createHoliday(dto);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HolidayEntity> createHoliday(@RequestBody HolidayCreationDto dto) {
+        return new ResponseEntity<>(service.createHoliday(dto), HttpStatus.CREATED);
     }
 
-    @RequestMapping("/getAll")
-    public void getAllHolidays() {
-        service.getAllHolidays();
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Iterable<HolidayEntity>> getAllHolidays() {
+        return ResponseEntity.ok(service.getAllHolidays());
     }
 
-    @RequestMapping("/getById")
-    public void getHolidayById(Long id) {
-        service.getHolidayById(id);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HolidayEntity> getHolidayById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getHolidayById(id));
+    }
+
+    @GetMapping("/by-enterprise/{id_enterprise}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<HolidayEntity>> getHolidaysByEnterprise(@PathVariable Long id_enterprise) {
+        return ResponseEntity.ok(service.getHolidaysByEnterpriseId(id_enterprise));
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteHoliday(Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteHoliday(@PathVariable Long id) {
         service.deleteHoliday(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update/{id}")
-    public void updateHoliday(Long id, @RequestBody HolidayCreationDto dto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateHoliday(@PathVariable Long id, @RequestBody HolidayCreationDto dto) {
         service.updateHoliday(id, dto);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -2,6 +2,8 @@ package workshop.zepcla.entities;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,14 +33,10 @@ public class EnterpriseEntity extends BaseEntity {
     @Column(name = "days_off", nullable = true)
     private DayOfWeek daysOff;
 
-    @Column(nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_holiday", referencedColumnName = "id")
-    private HolidayEntity holidayId;
+    @OneToMany(mappedBy = "enterprise", fetch = FetchType.LAZY)
+    private List<HolidayEntity> holidays = new ArrayList<>();
 
-    @Column(nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_break", referencedColumnName = "id")
-    private BreakEntity breakId;
+    @OneToMany(mappedBy = "enterprise", fetch = FetchType.LAZY)
+    private List<BreakEntity> breaks = new ArrayList<>();
 
 }

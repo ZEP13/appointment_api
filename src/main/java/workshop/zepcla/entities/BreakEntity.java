@@ -23,6 +23,10 @@ public class BreakEntity extends BaseEntity {
 
     private LocalTime endTime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_enterprise", referencedColumnName = "id")
+    private EnterpriseEntity enterprise;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "days_off", nullable = true)
     private DayOfWeek daysOff;

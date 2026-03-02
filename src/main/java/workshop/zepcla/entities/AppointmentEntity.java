@@ -50,7 +50,7 @@ public class AppointmentEntity extends BaseEntity {
     @Column(nullable = true, unique = true)
     private String token;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_enterprise", referencedColumnName = "id")
     private EnterpriseEntity enterprise;
 }

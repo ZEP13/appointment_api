@@ -16,9 +16,21 @@
             <column name="endTime" type="TIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="days_off" type="varchar(20)">
+            <column name="days_off" type="VARCHAR(20)">
                 <constraints nullable="true"/>
             </column>
+            <column name="id_enterprise" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"
+                defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
+        <addForeignKeyConstraint
+            baseTableName="breaks"
+            baseColumnNames="id_enterprise"
+            referencedTableName="enterprise"
+            referencedColumnNames="id"
+            constraintName="fk_break_enterprise"
+            onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>
