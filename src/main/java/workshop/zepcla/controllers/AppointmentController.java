@@ -58,6 +58,13 @@ public class AppointmentController {
         return ResponseEntity.ok(dto);
     }
 
+    // @GetMapping("/incoming-appointment")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
+    // public ResponseEntity<List<AppointmentDto>> getIncomingAppointment() {
+    // List<AppointmentDto> list = appointmentService.getIncomingAppointment();
+    // return ResponseEntity.ok(list);
+    // }
+
     @GetMapping("/by-date")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByDate(@RequestParam LocalDate date) {

@@ -20,9 +20,9 @@ public class AppointmentControllerWithoutAuth {
     @PermitAll
     @PostMapping("/create")
     public ResponseEntity<?> createRdvWithoutAccount(@RequestBody AppointmentPublicCreationDto dto) {
-        appointmentService.createAppointmentWithoutAccount(dto);
+        String token = appointmentService.createAppointmentWithoutAccount(dto);
         return ResponseEntity.ok(Map.of(
-                "message", "Rendez-vous créé"));
+                "Rendez-vous créé", token));
     }
 
     // http://localhost:8080/appointments/public/consult?token=654e8fbc-8107-443f-9d58-1baf80e47be4

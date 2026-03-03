@@ -74,6 +74,6 @@ public class HolidayService {
     }
 
     public List<HolidayEntity> getHolidaysByEnterpriseId(Long enterpriseId) {
-        return repo.findByEnterpriseId(enterpriseId);
+        return repo.findByEnterprise_Id(enterpriseId);
     }
 }

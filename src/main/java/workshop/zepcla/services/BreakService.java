@@ -40,7 +40,7 @@ public class BreakService {
                             enterprise.getOpeningTime() + " - " + enterprise.getClosingTime());
         }
 
-        List<BreakEntity> existing = repo.findByEnterpriseId(dto.enterpriseId());
+        List<BreakEntity> existing = repo.findByEnterprise_Id(dto.enterpriseId());
         for (BreakEntity b : existing) {
             if (excludeId != null && b.getId().equals(excludeId))
                 continue;
@@ -88,6 +88,6 @@ public class BreakService {
     }
 
     public List<BreakEntity> getBreaksByEnterpriseId(Long enterpriseId) {
-        return repo.findByEnterpriseId(enterpriseId);
+        return repo.findByEnterprise_Id(enterpriseId);
     }
 }

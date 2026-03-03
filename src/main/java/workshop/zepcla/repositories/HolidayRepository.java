@@ -8,5 +8,5 @@ import workshop.zepcla.entities.HolidayEntity;
 
 public interface HolidayRepository extends JpaRepository<HolidayEntity, Long> {
 
-    List<HolidayEntity> findByEnterpriseId(Long enterpriseId);
+    List<HolidayEntity> findByEnterprise_Id(Long enterpriseId);
 }

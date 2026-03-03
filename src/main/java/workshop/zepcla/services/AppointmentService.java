@@ -49,11 +49,12 @@ public class AppointmentService {
     private final EnterpriseRepository enterpriseRepository;
 
     public boolean validateAppointmentTimeIsFree(LocalDate date, LocalTime time, Long enterpriseId) {
-        AppointmentEntity freeTime = appointmentRepository.findByDateAndTimeAndEnterpriseId(date, time, enterpriseId);
-        if (freeTime.getStatus().equals("CANCELLED")) {
+        AppointmentEntity freeTime = appointmentRepository.findByDateAndTimeAndEnterprise_Id(date, time, enterpriseId);
+        if (freeTime == null) {
+            // No appointment exists at this time → it's free
             return true;
         }
-        return false;
+        return "CANCELLED".equals(freeTime.getStatus());
     }
 
     public void validateEnterpriseAvailability(EnterpriseEntity enterprise,
@@ -189,6 +190,13 @@ public class AppointmentService {
 
         return appointmentMapper.toDto(appointmentRepository.save(entity));
     }
+
+    // peblic List<AppointmentDto> getIncomingAppointment() {
+    // UserEntity clientEntity = userService.getCurrentUserEntity();
+    // List<AppointmentDto> list=
+    // appointmentRepository.findByClientAndDateAfte(clientEntity, LocalDate.now())
+    // i
+    // }
 
     public AppointmentDto cancelAppointment(Long id) {
         AppointmentEntity appointment = appointmentRepository.findById(id)

@@ -8,6 +8,6 @@ import workshop.zepcla.entities.BreakEntity;
 
 public interface BreakRepository extends JpaRepository<BreakEntity, Long> {
 
-    List<BreakEntity> findByEnterpriseId(Long enterpriseId);
+    List<BreakEntity> findByEnterprise_Id(Long enterpriseId);
 
 }

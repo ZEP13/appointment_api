@@ -30,10 +30,10 @@ public class AppointmentServicePublic {
     public String createAppointmentWithoutAccount(AppointmentPublicCreationDto dto) {
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
-        Long id = dto.enterpriseId();
-        if (!appointmentService.validateAppointmentTimeIsFree(date, time, id)) {
-            throw new NoAvaibleAppointment(
-                    "on " + date + " at " + time);
+        Long enterpriseId = dto.enterpriseId();
+
+        if (!appointmentService.validateAppointmentTimeIsFree(date, time, enterpriseId)) {
+            throw new NoAvaibleAppointment("on " + date + " at " + time);
         }
 
         if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
@@ -41,22 +41,23 @@ public class AppointmentServicePublic {
                     "on " + date + " at " + time + ". Please select a valid date");
         }
 
-        EnterpriseEntity enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new AppointmentNotFound("Enterprise with id " + id + " not found"));
+        EnterpriseEntity enterprise = enterpriseRepository.findById(enterpriseId)
+                .orElseThrow(() -> new AppointmentNotFound(
+                        "Enterprise with id " + enterpriseId + " not found"));
 
         appointmentService.validateEnterpriseAvailability(enterprise, date, time, dto.duration());
 
-        boolean slotTaken = appointmentRepository.existsByDateAndTimeAndEnterprise(date, time, id);
+        boolean slotTaken = appointmentRepository.existsByDateAndTimeAndEnterprise_Id(date, time, enterpriseId);
         if (slotTaken) {
             throw new NoAvaibleAppointment("on " + date + " at " + time);
         }
 
         AppointmentEntity appointment = appointmentMapper.toEntityForPublicCreation(dto);
 
+        appointment.setEnterprise(enterprise);
+        appointment.setStatus("PLANIFIED");
         String token = UUID.randomUUID().toString();
         appointment.setToken(token);
-        appointment.setStatus("PLANIFIED");
-        appointment.setEnterprise(enterprise);
 
         appointmentRepository.save(appointment);
         return token;
