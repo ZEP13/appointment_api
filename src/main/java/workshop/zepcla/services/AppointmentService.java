@@ -61,15 +61,15 @@ public class AppointmentService {
                             " - " + enterprise.getClosingTime());
         }
 
-        if (enterprise.getDaysOff() != null &&
-                enterprise.getDaysOff() == date.getDayOfWeek()) {
+        if (enterprise.getDaysOff().contains(date.getDayOfWeek())) {
+
             throw new EnterpriseClosedException(
-                    "The enterprise is closed every " + enterprise.getDaysOff());
+                    "The enterprise is closed every " + date.getDayOfWeek());
         }
 
         for (HolidayEntity holiday : enterprise.getHolidays()) {
-            if (!date.isBefore(holiday.getStartDate()) &&
-                    !date.isAfter(holiday.getEndDate())) {
+            if ((date.isEqual(holiday.getStartDate()) || date.isAfter(holiday.getStartDate())) &&
+                    (date.isEqual(holiday.getEndDate()) || date.isBefore(holiday.getEndDate()))) {
                 throw new EnterpriseClosedException(
                         "The enterprise is on holiday from " +
                                 holiday.getStartDate() + " to " + holiday.getEndDate() +
@@ -78,16 +78,20 @@ public class AppointmentService {
         }
 
         for (BreakEntity breakEntity : enterprise.getBreaks()) {
+
             if (breakEntity.getDaysOff() != null &&
-                    breakEntity.getDaysOff() != date.getDayOfWeek()) {
+                    !breakEntity.getDaysOff().equals(date.getDayOfWeek())) {
                 continue;
             }
+
             boolean overlaps = time.isBefore(breakEntity.getEndTime()) &&
                     appointmentEnd.isAfter(breakEntity.getStartTime());
+
             if (overlaps) {
                 throw new EnterpriseClosedException(
                         "The appointment overlaps with a break from " +
-                                breakEntity.getStartTime() + " to " + breakEntity.getEndTime());
+                                breakEntity.getStartTime() + " to " +
+                                breakEntity.getEndTime());
             }
         }
     }
@@ -102,8 +106,7 @@ public class AppointmentService {
                     "on " + date + " at " + time + ". Please select a valid date");
         }
 
-        Long idEnterprise = dto.enterprise().id();
-        EnterpriseEntity enterprise = enterpriseService.getEnterpriseById(idEnterprise);
+        EnterpriseEntity enterprise = enterpriseService.getEnterpriseById(dto.enterpriseId());
 
         validateEnterpriseAvailability(enterprise, date, time, dto.duration());
 
@@ -147,7 +150,7 @@ public class AppointmentService {
 
         UserEntity clientEntity = null;
         if (dto.id_client() != null) {
-            clientEntity = userRepository.findById(dto.id_client().id())
+            clientEntity = userRepository.findById(dto.id_client())
                     .orElseThrow(() -> new UserIdNotFoundException("User ID not found: " + dto.id_client()));
 
             boolean clientConflict = appointmentRepository.existsByClientAndDateAndTime(clientEntity, date, time);

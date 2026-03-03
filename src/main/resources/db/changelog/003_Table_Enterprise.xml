@@ -13,10 +13,10 @@
             <column name="name" type="VARCHAR(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="openingTime" type="TIME">
+            <column name="opening_time" type="TIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="closingTime" type="TIME">
+            <column name="closing_time" type="TIME">
                 <constraints nullable="false"/>
             </column>
             <column name="days_off" type="VARCHAR(20)">

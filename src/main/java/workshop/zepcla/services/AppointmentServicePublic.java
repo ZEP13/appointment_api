@@ -29,7 +29,7 @@ public class AppointmentServicePublic {
         appointment.setToken(UUID.randomUUID().toString());
         appointment.setStatus("PLANIFIED");
 
-        Long idEnterprise = dto.enterprise().id();
+        Long idEnterprise = dto.enterpriseId();
         EnterpriseEntity enterprise = enterpriseService.getEnterpriseById(idEnterprise);
 
         appointment.setEnterprise(enterprise);

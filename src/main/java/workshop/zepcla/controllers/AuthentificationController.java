@@ -36,7 +36,6 @@ public class AuthentificationController {
     }
 
     @PostMapping("/logged/admin/create")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createAdmin(@RequestBody UserCreationDto dto) {
         userService.saveAdmin(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -10,10 +10,10 @@
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="startTime" type="TIME">
+            <column name="start_time" type="TIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="endTime" type="TIME">
+            <column name="end_time" type="TIME">
                 <constraints nullable="false"/>
             </column>
             <column name="days_off" type="VARCHAR(20)">

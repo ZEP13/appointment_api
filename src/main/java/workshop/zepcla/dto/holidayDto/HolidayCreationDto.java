@@ -6,5 +6,6 @@ public record HolidayCreationDto(
         String name,
         LocalDate startDate,
         LocalDate endDate,
+        Long enterpriseId,
         String description) {
 }

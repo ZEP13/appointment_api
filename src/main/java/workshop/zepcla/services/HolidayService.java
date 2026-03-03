@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.holidayDto.HolidayCreationDto;
+import workshop.zepcla.dto.holidayDto.HolidayDto;
+import workshop.zepcla.entities.EnterpriseEntity;
 import workshop.zepcla.entities.HolidayEntity;
 import workshop.zepcla.exceptions.holidayException.HolidayDateInvalidException;
 import workshop.zepcla.exceptions.holidayException.HolidayNotFound;
@@ -19,6 +21,7 @@ public class HolidayService {
 
     private final HolidayRepository repo;
     private final HolidayMapper mapper;
+    private final EnterpriseService enterpriseService;
 
     private void validateHoliday(HolidayCreationDto dto) {
 
@@ -31,9 +34,17 @@ public class HolidayService {
         }
     }
 
-    public HolidayEntity createHoliday(HolidayCreationDto dto) {
+    public HolidayDto createHoliday(HolidayCreationDto dto) {
         validateHoliday(dto);
-        return repo.save(mapper.toCreationEntity(dto));
+
+        EnterpriseEntity enterprise = enterpriseService
+                .getEnterpriseById(dto.enterpriseId());
+
+        HolidayEntity holiday = mapper.toCreationEntity(dto);
+
+        holiday.setEnterprise(enterprise);
+
+        return mapper.toDto(repo.save(holiday));
     }
 
     public void deleteHoliday(Long id) {
@@ -46,8 +57,10 @@ public class HolidayService {
         HolidayEntity existing = repo.findById(id)
                 .orElseThrow(() -> new HolidayNotFound("with id " + id));
         validateHoliday(dto);
+        existing.setName(dto.name());
         existing.setStartDate(dto.startDate());
         existing.setEndDate(dto.endDate());
+        existing.setDescription(dto.description());
         repo.save(existing);
     }
 

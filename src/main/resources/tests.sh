@@ -1,4 +1,3 @@
-cat > tests.sh << 'EOF'
 #!/bin/bash
 
 BASE_URL="http://localhost:8080"
@@ -467,5 +466,3 @@ curl -s -X DELETE "$BASE_URL/logged/enterprises/delete/1" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq .
 
 echo -e "${GREEN}=== Tests done ===${NC}"
-EOF
-chmod +x tests.sh

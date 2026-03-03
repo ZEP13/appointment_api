@@ -2,15 +2,11 @@ package workshop.zepcla.dto.enterpriseDto;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-
-import workshop.zepcla.entities.BreakEntity;
-import workshop.zepcla.entities.HolidayEntity;
+import java.util.Set;
 
 public record EnterpriseCreationDto(
         String name,
         LocalTime openingTime,
         LocalTime closingTime,
-        DayOfWeek daysOff,
-        HolidayEntity holidayId,
-        BreakEntity timeBreakId) {
+        Set<DayOfWeek> daysOff) {
 }
