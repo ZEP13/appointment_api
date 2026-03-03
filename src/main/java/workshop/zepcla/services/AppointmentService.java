@@ -48,14 +48,12 @@ public class AppointmentService {
     private final UserService userService;
     private final EnterpriseRepository enterpriseRepository;
 
-    public void validateAppointmentTimeIsFree(LocalDate date, LocalTime time) {
-        AppointmentEntity freeTime = appointmentRepository.findByDateAndTime(date, time);
+    public boolean validateAppointmentTimeIsFree(LocalDate date, LocalTime time, Long enterpriseId) {
+        AppointmentEntity freeTime = appointmentRepository.findByDateAndTimeAndEnterpriseId(date, time, enterpriseId);
         if (freeTime.getStatus().equals("CANCELLED")) {
-            return;
+            return true;
         }
-        if (freeTime != null) {
-            throw new NoAvaibleAppointment("on " + date + " at " + time);
-        }
+        return false;
     }
 
     public void validateEnterpriseAvailability(EnterpriseEntity enterprise,
@@ -111,8 +109,9 @@ public class AppointmentService {
 
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
+        Long id = dto.enterpriseId();
 
-        if (validateAppointmentTimeIsFree(date, time)) {
+        if (!validateAppointmentTimeIsFree(date, time, id)) {
             throw new NoAvaibleAppointment("on " + date + " at " + time);
         }
 
@@ -121,7 +120,6 @@ public class AppointmentService {
                     "on " + date + " at " + time + ". Please select a valid date");
         }
 
-        Long id = dto.enterpriseId();
         EnterpriseEntity enterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new EnterpriseClosedException("Enterprise with id " + id + " not found"));
         validateEnterpriseAvailability(enterprise, date, time, dto.duration());
@@ -149,7 +147,8 @@ public class AppointmentService {
 
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
-        if (validateAppointmentTimeIsFree(date, time)) {
+        Long id = userService.getCurrentUserEntity().getEnterprise().getId();
+        if (!validateAppointmentTimeIsFree(date, time, id)) {
             throw new NoAvaibleAppointment("on " + date + " at " + time);
         }
         if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
@@ -162,7 +161,6 @@ public class AppointmentService {
                     "You are not allowed to create an appointment as admin");
         }
 
-        Long id = userService.getCurrentUserEntity().getEnterprise().getId();
         EnterpriseEntity enterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new EnterpriseClosedException("Enterprise with id " + id + " not found"));
 

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
-import javax.naming.CannotProceedException;
-
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -32,19 +30,23 @@ public class AppointmentServicePublic {
     public String createAppointmentWithoutAccount(AppointmentPublicCreationDto dto) {
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
+        Long id = dto.enterpriseId();
+        if (!appointmentService.validateAppointmentTimeIsFree(date, time, id)) {
+            throw new NoAvaibleAppointment(
+                    "on " + date + " at " + time);
+        }
 
         if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
-            throw new CannotProceedException(
+            throw new NoAvaibleAppointment(
                     "on " + date + " at " + time + ". Please select a valid date");
         }
 
-        Long id = dto.enterpriseId();
         EnterpriseEntity enterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new AppointmentNotFound("Enterprise with id " + id + " not found"));
 
         appointmentService.validateEnterpriseAvailability(enterprise, date, time, dto.duration());
 
-        boolean slotTaken = appointmentRepository.existsByDateAndTimeAndEnterprise(date, time, enterprise);
+        boolean slotTaken = appointmentRepository.existsByDateAndTimeAndEnterprise(date, time, id);
         if (slotTaken) {
             throw new NoAvaibleAppointment("on " + date + " at " + time);
         }
