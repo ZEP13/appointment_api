@@ -20,6 +20,8 @@ public interface AppointmentRepository
 
     boolean existsByDateAndTimeAndEnterprise(LocalDate date, LocalTime time, Long enterpriseId);
 
+    AppointmentEntity findByDateAndTime(LocalDate date, LocalTime time);
+
     List<AppointmentEntity> findByClient(UserEntity client);
 
     List<AppointmentEntity> findByDate(LocalDate date);

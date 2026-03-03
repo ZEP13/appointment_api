@@ -48,6 +48,16 @@ public class AppointmentService {
     private final UserService userService;
     private final EnterpriseRepository enterpriseRepository;
 
+    public void validateAppointmentTimeIsFree(LocalDate date, LocalTime time) {
+        AppointmentEntity freeTime = appointmentRepository.findByDateAndTime(date, time);
+        if (freeTime.getStatus().equals("CANCELLED")) {
+            return;
+        }
+        if (freeTime != null) {
+            throw new NoAvaibleAppointment("on " + date + " at " + time);
+        }
+    }
+
     public void validateEnterpriseAvailability(EnterpriseEntity enterprise,
             LocalDate date,
             LocalTime time,
@@ -102,6 +112,10 @@ public class AppointmentService {
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
 
+        if (validateAppointmentTimeIsFree(date, time)) {
+            throw new NoAvaibleAppointment("on " + date + " at " + time);
+        }
+
         if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
             throw new ClientCantHaveAppointmentInPast(
                     "on " + date + " at " + time + ". Please select a valid date");
@@ -135,7 +149,9 @@ public class AppointmentService {
 
         LocalDate date = dto.date_appointment();
         LocalTime time = dto.time_appointment();
-
+        if (validateAppointmentTimeIsFree(date, time)) {
+            throw new NoAvaibleAppointment("on " + date + " at " + time);
+        }
         if (LocalDateTime.of(date, time).isBefore(LocalDateTime.now())) {
             throw new ClientCantHaveAppointmentInPast(
                     "on " + date + " at " + time + ". Please select a valid date");
