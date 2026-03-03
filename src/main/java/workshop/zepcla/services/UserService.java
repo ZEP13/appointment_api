@@ -1,5 +1,6 @@
 package workshop.zepcla.services;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -46,14 +47,18 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = repo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
-        String[] roles = userEntity.getRole().split(",");
+        String[] roles = userEntity.getRole()
+                .split(",");
+
+        String[] cleanRoles = Arrays.stream(roles)
+                .map(String::trim)
+                .toArray(String[]::new);
 
         return User.builder()
                 .username(userEntity.getEmail())
                 .password(userEntity.getPassword())
-                .roles(roles)
+                .roles(cleanRoles)
                 .build();
-
     }
 
     public void save(UserCreationDto userCreationDto) {
@@ -85,7 +90,19 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Enterprise is required for admin creation");
         }
 
-        save(dto);
+        if (repo.existsByEmail(dto.email())) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
+        UserEntity newAdmin = userMapper.toEntityForCreation(dto);
+        newAdmin.setPassword(passwordEncoder.encode(dto.password()));
+        newAdmin.setRole("ADMIN");
+
+        EnterpriseEntity enterprise = enterpriseRepository.findById(dto.enterpriseId())
+                .orElseThrow(() -> new EnterpriseNotFound("with id " + dto.enterpriseId()));
+        newAdmin.setEnterprise(enterprise);
+
+        repo.save(newAdmin);
     }
 
     public void updateUser(Long id, UserCreationDto userCreationDto) {

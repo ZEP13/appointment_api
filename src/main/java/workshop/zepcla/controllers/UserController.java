@@ -3,6 +3,7 @@ package workshop.zepcla.controllers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 import workshop.zepcla.dto.userDto.UserCreationDto;
@@ -51,6 +52,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
+    @GetMapping("/debug-auth")
+    public Object debugAuth(Authentication authentication) {
+        return authentication.getAuthorities();
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
@@ -75,6 +81,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Iterable<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/create/admin")
+    @PreAuthorize("hasAnyRole('SUPERADMIN', 'ADMIN')")
+    public ResponseEntity<Void> createAdmin(@RequestBody UserCreationDto request) {
+        userService.saveAdmin(request);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
