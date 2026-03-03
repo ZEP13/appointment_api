@@ -13,6 +13,7 @@ import workshop.zepcla.entities.HolidayEntity;
 import workshop.zepcla.exceptions.holidayException.HolidayDateInvalidException;
 import workshop.zepcla.exceptions.holidayException.HolidayNotFound;
 import workshop.zepcla.mappers.HolidayMapper;
+import workshop.zepcla.repositories.EnterpriseRepository;
 import workshop.zepcla.repositories.HolidayRepository;
 
 @Service
@@ -21,7 +22,7 @@ public class HolidayService {
 
     private final HolidayRepository repo;
     private final HolidayMapper mapper;
-    private final EnterpriseService enterpriseService;
+    private final EnterpriseRepository enterpriserRepository;
 
     private void validateHoliday(HolidayCreationDto dto) {
 
@@ -37,8 +38,8 @@ public class HolidayService {
     public HolidayDto createHoliday(HolidayCreationDto dto) {
         validateHoliday(dto);
 
-        EnterpriseEntity enterprise = enterpriseService
-                .getEnterpriseById(dto.enterpriseId());
+        EnterpriseEntity enterprise = enterpriserRepository.findById(dto.enterpriseId())
+                .orElseThrow(() -> new HolidayNotFound("Enterprise with id " + dto.enterpriseId() + " not found"));
 
         HolidayEntity holiday = mapper.toCreationEntity(dto);
 
