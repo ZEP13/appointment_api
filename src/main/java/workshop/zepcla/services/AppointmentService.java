@@ -71,7 +71,6 @@ public class AppointmentService {
         }
 
         if (enterprise.getDaysOff().contains(date.getDayOfWeek())) {
-
             throw new EnterpriseClosedException(
                     "The enterprise is closed every " + date.getDayOfWeek());
         }
@@ -298,6 +297,9 @@ public class AppointmentService {
             String time,
             String duration,
             String status,
+            String email_client,
+            Long id_client,
+            Long id_creator,
             String token) {
         Pageable pageable = PageRequest.of(page, size);
 
@@ -307,6 +309,9 @@ public class AppointmentService {
                 .and(hasTime(time))
                 .and(hasDuration(duration))
                 .and(hasStatus(status))
+                .and(hasEmailClient(email_client))
+                .and(hasIdClient(id_client))
+                .and(hasIdCreator(id_creator))
                 .and(hasToken(token));
 
         return appointmentRepository.findAll(spec, pageable)

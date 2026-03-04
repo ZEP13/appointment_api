@@ -25,6 +25,20 @@ public class AppointmentSpecification {
                 : criteriaBuilder.like(root.get("duration"), duration));
     }
 
+    public static Specification<AppointmentEntity> hasEmailClient(String email_client) {
+		return ((root, query, criteriaBuilder) -> email_client == null ? null
+				: criteriaBuilder.like(root.get("email_client"), email_client));
+	}
+
+    public static Specification<AppointmentEntity> hasIdClient(Long id_client) {
+		return ((root, query, criteriaBuilder) -> id_client == null ? null
+				: criteriaBuilder.equal(root.get("id_client"), id_client));
+	}
+    public static Specification<AppointmentEntity> hasIdCreator(Long id_creator) {
+		return ((root, query, criteriaBuilder) -> id_creator == null ? null
+				: criteriaBuilder.equal(root.get("id_creator"), id_creator));
+	}
+
     public static Specification<AppointmentEntity> hasStatus(String status) {
         return ((root, query, criteriaBuilder) -> status == null ? null
                 : criteriaBuilder.like(root.get("status"), status));

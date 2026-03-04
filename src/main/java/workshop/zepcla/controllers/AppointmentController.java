@@ -96,8 +96,12 @@ public class AppointmentController {
             @RequestParam(required = false) String time,
             @RequestParam(required = false) String duration,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String email_client,
+            @RequestParam(required = false) Long id_client,
+            @RequestParam(required = false) Long id_creator,
             @RequestParam(required = false) String token) {
         Page<AppointmentDto> result = appointmentService.superSearch(page, size, id, date, time, duration, status,
+                email_client, id_client, id_creator,
                 token);
         return ResponseEntity.ok(result);
     }

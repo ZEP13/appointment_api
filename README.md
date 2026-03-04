@@ -1,5 +1,8 @@
 # Workshop Zepcla API
 
+## Db schema
+![Illustration](db_schema.png)
+
 ## Authentication
 Routes prefixed with `/logged/` require a valid JWT token:
 ```
