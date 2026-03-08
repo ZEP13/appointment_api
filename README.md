@@ -1,4 +1,4 @@
-# Workshop Zepcla API
+# Appointment APIrest
 
 ## Db schema
 ![Illustration](db_schema.png)
